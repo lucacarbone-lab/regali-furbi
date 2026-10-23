@@ -138,9 +138,13 @@ SEZIONI.filter(s => !s.fino || oggi <= s.fino).forEach(s => {
   main.insertAdjacentHTML("beforeend",
    `<section id="${s.id}"><h2>${s.t}</h2><p class="intro">${s.i}</p><div class="grid">` +
    s.p.map(([ico,n,d,q]) => `<div class="card"><div class="ico">${ico}</div><h3>${n}</h3><p>${d}</p>` +
-     `<a class="btn" href="${cerca(q)}" target="_blank" rel="nofollow sponsored noopener">${q.includes("lucacarbone.eu") ? "Vedi la lista →" : "Vedi su Amazon →"}</a></div>`).join("") +
+     `<a class="btn" data-goatcounter-click="amazon-${s.id}" data-goatcounter-title="${n}" data-goatcounter-referrer="/regali-furbi" href="${cerca(q)}" target="_blank" rel="nofollow sponsored noopener">${q.includes("lucacarbone.eu") ? "Vedi la lista →" : "Vedi su Amazon →"}</a></div>`).join("") +
    `</div></section>`);
 });
 </script>
+<!-- GoatCounter (23/10/2026): visite a /regali-furbi + clic verso Amazon come eventi "amazon-<sezione>" -->
+<script data-goatcounter="https://lucacarbone.goatcounter.com/count"
+        data-goatcounter-settings='{"path": "/regali-furbi", "allow_frame": true}'
+        async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
