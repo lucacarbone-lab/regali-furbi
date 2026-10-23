@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regali furbi</title>
+<style>
+:root{--bg:#fffaf3;--card:#fff;--ink:#2b2622;--soft:#6e645b;--acc:#c0392b;--acc2:#1f7a5c;--line:#eadfd2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Georgia,"Times New Roman",serif}
+.wrap{max-width:980px;margin:0 auto;padding:24px 16px 48px}
+header{text-align:center;padding:12px 0 8px}
+h1{font-size:clamp(30px,6vw,46px);margin:0 0 6px}
+.sub{color:var(--soft);font-style:italic;margin:0 auto;max-width:640px}
+.tema{background:var(--acc);color:#fff;border-radius:14px;padding:14px 18px;margin:22px 0 6px;text-align:center}
+.tema b{font-size:20px}
+nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0}
+nav a{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:6px 14px;color:var(--ink);text-decoration:none;font-size:15px}
+section{margin-top:34px}
+h2{font-size:26px;margin:0 0 4px}
+.intro{color:var(--soft);margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column}
+.ico{font-size:34px;line-height:1}
+.card h3{font-size:19px;margin:8px 0 6px}
+.card p{margin:0 0 12px;flex:1}
+.btn{align-self:flex-start;background:var(--acc2);color:#fff;text-decoration:none;border-radius:8px;padding:8px 14px;font-family:Arial,sans-serif;font-size:15px}
+footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);color:var(--soft);font-size:14px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>🎁 Regali furbi</h1>
+  <p class="sub">Regali che vengono usati davvero, non riciclati a Pasqua. Scelti con un criterio scientifico: «lo vorrei anch'io».</p>
+</header>
+
+<!-- Banner del periodo: lo sceglie lo script in base alla data (vedi BANNER) -->
+<div class="tema" id="tema"><b>🎄 Speciale Natale</b><br>Meno maglioni con le renne, più cose che migliorano gennaio.</div>
+
+<nav id="nav"></nav>
+<main id="main"></main>
+
+<footer>
+  In qualità di Affiliato Amazon ricevo un guadagno dagli acquisti idonei. A te non costa nulla in più, a me paga un caffè.<br>
+  I prezzi li trovi aggiornati su Amazon: li cambiano più spesso di quanto io cambi idea.
+</footer>
+</div>
+
+<script>
+// Tag Amazon del sito. I link puntano a ricerche filtrate: la commissione vale su tutto il carrello.
+const TAG = "lucacarbone.eu-21";
+const cerca = q => q.startsWith("http") ? q : "https://www.amazon.it/s?k=" + encodeURIComponent(q) + "&tag=" + TAG;
+const libro = asin => "https://www.amazon.it/dp/" + asin + "?tag=" + TAG;
+const autore = a => "https://www.amazon.it/s?i=stripbooks&field-author=" + encodeURIComponent(a) + "&tag=" + TAG;
+
+// Banner: durante un evento "Speciale xx", finito l'evento torna da solo a quello grande successivo (es. Natale).
+const BANNER = [
+ {dal:"2026-10-20", al:"2026-10-31", b:"🎃 Speciale Halloween", s:"Dolcetto o scherzetto? Qui solo dolcetti, e qualche ragnatela finta."},
+ {dal:"2026-11-01", al:"2026-12-25", b:"🎄 Speciale Natale", s:"Meno maglioni con le renne, più cose che migliorano gennaio."}
+];
+const oggi = new Date().toISOString().slice(0,10);
+const ban = BANNER.find(e => oggi >= e.dal && oggi <= e.al) || BANNER.find(e => oggi < e.dal);
+if (ban) document.getElementById("tema").innerHTML = `<b>${ban.b}</b><br>${ban.s}`;
+
+// Sezioni → prodotti. Per aggiungere o togliere un regalo basta toccare questo elenco.
+// "fino": ultimo giorno in cui la sezione si vede (le sezioni a evento spariscono da sole).
+const SEZIONI = [
+ {id:"halloween", fino:"2026-10-31", t:"🎃 Halloween", i:"Per chi vuole spaventare gli amici, o almeno farli ridere mentre ci prova.", p:[
+  ["🎃","Kit per intagliare la zucca","Per fare la zucca da Instagram invece di quella da film dell'orrore (involontario).","kit intaglio zucca halloween"],
+  ["🍬","Caramelle assortite in busta grande","Se non suona nessuno al campanello, il problema si risolve da solo.","caramelle halloween busta"],
+  ["🕸️","Decorazioni Halloween per casa","Ragnatele finte: finalmente una scusa per quelle vere negli angoli.","decorazioni halloween casa"]]},
+ {id:"natale", t:"🎄 Sotto l'albero", i:"Il meglio del periodo, per chi non sa cosa regalare ma vuole fare bella figura.", p:[
+  ["🕯️","Candele profumate","Per chi dice «non mi serve niente». Infatti non serve, ma la accende ogni sera.","candela profumata regalo"],
+  ["🍫","Calendario dell'avvento gourmet","Funziona anche dopo il 25: basta non contare.","calendario avvento cioccolato"],
+  ["🧦","Calzini natalizi (belli, giuro)","L'unico regalo che nessuno ammette di volere e tutti mettono.","calzini natalizi divertenti"]]},
+ {id:"luca", t:"✍️ I libri di Luca", i:"Li ho scritti io, quindi sono di parte. Ma li ho anche riletti, e reggono.", p:[
+  ["🪟","Finestre di opportunità","Quando una porta si chiude, a volte conviene guardare dalla finestra.",libro("B0G26LJWRG")],
+  ["🏠","SM: conosci e gestisci la tua coinquilina","Manuale di convivenza con un'inquilina che non paga l'affitto.",libro("B0H6XMJN4P")],
+  ["💶","Finanza personale e SM","Soldi, salute e futuro: come far quadrare i conti senza perdere il sorriso.",libro("B0F4DYTQ1L")],
+  ["🧭","Folle viaggio di un cercatore","Un viaggio che non finisce dove pensavi. Per fortuna.",libro("B01MZHKKGD")],
+  ["🐴","Bardotto purosangue","Né cavallo né asino, ma con un carattere tutto suo.",libro("B0155LUOKY")],
+  ["👓","I miei occhi nuovi","Cambiare sguardo sulle cose, senza bisogno dell'oculista.",libro("B00KVPB3XM")],
+  ["🎶","Il metodo per flauto","Per chi ha un flauto in un cassetto e una scusa in meno.",libro("1523397233")]]},
+ {id:"kit", t:"🦾 Il mio kit SM", i:"Gli oggetti che uso davvero ogni giorno, provati sul campo (e sulle scale).", p:[
+  ["🧰","Il kit completo di Luca","Tutori, aiuti per camminare e piccole furbizie quotidiane: la mia lista personale.","https://www.lucacarbone.eu/i-miei-ultimi-acquisti"]]},
+ {id:"mamma", t:"💐 Per la mamma", i:"Per la mamma che dice «non mi serve niente». Mente, ma con amore.", p:[
+  ["🛁","Set relax spa","Mezz'ora chiusa in bagno senza che nessuno la chiami. Il vero regalo è quello.","set regalo spa donna"],
+  ["🌿","Diffusore di aromi","Casa profumata e un po' di zen, anche quando il figlio non chiama.","diffusore aromi ultrasuoni"],
+  ["📷","Album foto da riempire","Così le foto escono finalmente dal telefono.","album fotografico da personalizzare"]]},
+ {id:"papa", t:"🔧 Per il papà", i:"Per il papà che ha già tutto, compreso il cacciavite doppio.", p:[
+  ["🪛","Cacciavite elettrico di precisione","Così ne ha uno in più, ma questo gira da solo.","cacciavite elettrico precisione"],
+  ["🍖","Kit barbecue","Il regno del papà: la griglia. Qui nessuno discute.","kit utensili barbecue"],
+  ["☕","Macinacaffè manuale","Per il rito del caffè della domenica. Lento, rumoroso, perfetto.","macinacaffè manuale"]]},
+ {id:"lei", t:"❤️ Per lei", i:"Regali che dicono «ti ho ascoltata», anche se non è del tutto vero.", p:[
+  ["💍","Gioiello minimal","Piccolo, elegante, impossibile sbagliare taglia.","collana minimal argento donna"],
+  ["🧖","Maschera viso e kit beauty","Una serata di coccole, in due se si è coraggiosi.","kit skincare regalo donna"],
+  ["📚","Kindle","Una libreria intera in borsa, senza strappi alla spalla.","kindle"]]},
+ {id:"lui", t:"💙 Per lui", i:"Per lui, che a Natale chiede «calzini» e poi si offende se glieli regali.", p:[
+  ["🎧","Cuffie con cancellazione del rumore","Per il silenzio. Non prenderla sul personale.","cuffie cancellazione rumore"],
+  ["👜","Portafoglio smart","Sottile, anti-clonazione, e finalmente niente scontrini del 2019.","portafoglio slim rfid uomo"],
+  ["🥃","Set da whisky con pietre","Per sentirsi in un film anche sul divano di casa.","set bicchieri whisky pietre"]]},
+ {id:"freddo", t:"🥶 Per chi ha sempre freddo", i:"Ogni famiglia ne ha uno. Di solito è quello che regola il termostato.", p:[
+  ["🛋️","Coperta riscaldata","Il divano diventa un'astronave. Consumo bassissimo, gratitudine altissima.","coperta elettrica riscaldata divano"],
+  ["🧣","Scaldacollo e guanti touch","Per rispondere al telefono senza togliere i guanti. Progresso.","guanti touch screen invernali"],
+  ["🥤","Borraccia termica","Tè caldo per 12 ore. Più affidabile di molte persone.","borraccia termica acciaio"],
+  ["🔥","Scaldamani ricaricabile","Tascabile, ricaricabile, fa anche da powerbank. Il coltellino svizzero del freddo.","scaldamani ricaricabile powerbank"]]},
+ {id:"cucina", t:"🍳 Cucina pigra (ma furba)", i:"Per chi ama mangiare bene e faticare il giusto. Cioè poco.", p:[
+  ["🫙","Apribarattoli elettrico","Fine della guerra col barattolo di sottaceti. Vince lui, finalmente.","apribarattoli elettrico automatico"],
+  ["🍟","Friggitrice ad aria","Fritto senza olio e senza sensi di colpa. I sensi di colpa tornano col tiramisù.","friggitrice ad aria"],
+  ["🥄","Mestolo e utensili ergonomici","Impugnature morbide: si cucina meglio quando le mani non protestano.","utensili cucina impugnatura ergonomica"],
+  ["⚖️","Bilancia smart da cucina","Per chi segue le ricette al grammo. O dice di farlo.","bilancia cucina digitale"]]},
+ {id:"comodi", t:"🛋️ Comodità che non si vergognano", i:"Oggetti che a 20 anni sembrano da nonni e a 40 diventano indispensabili.", p:[
+  ["🪑","Cuscino lombare","La schiena ringrazia, la sedia dell'ufficio meno.","cuscino lombare memory foam"],
+  ["🦶","Massaggiatore per piedi","Il regalo che crea dipendenza. Il primo giorno è tuo, poi è di tutti.","massaggiatore piedi elettrico"],
+  ["💡","Lampada da lettura con clip","Luce dove serve, niente litigi con chi dorme accanto.","lampada lettura led clip"],
+  ["🧤","Pantofole riscaldabili","Il lusso vero: piedi caldi a gennaio.","pantofole riscaldabili"]]},
+ {id:"nonni", t:"👵 Per i nonni (e chi ci vede come loro)", i:"I grandi classici in caratteri grandi: si leggono senza occhiali da sub.", p:[
+  ["📚","Classici a caratteri grandi","Promessi Sposi, Pinocchio, Dickens… stessi capolavori, lettere più generose.","libri classici caratteri grandi"],
+  ["📖","Un classico in corpo grande","Impaginazione ariosa, lettura senza fatica: il capolavoro torna leggibile anche senza lente.",libro("B08NYQWB33")],
+  ["🧩","Cruciverba e giochi a caratteri grandi","Allenano la mente e mettono fine alle discussioni su «come si scrive».","cruciverba caratteri grandi"],
+  ["📱","Telefono con tasti grandi","Squilla forte, si legge bene, e il pulsante SOS tranquillizza i figli.","telefono cellulare tasti grandi anziani"],
+  ["🖼️","Cornice digitale","Le foto dei nipoti arrivano da sole. Niente più «mandamele su WhatsApp».","cornice digitale wifi"]]},
+ {id:"mente", t:"🧠 Mente in forma", i:"Per chi si allena anche dal collo in su.", p:[
+  ["🎲","Giochi da tavolo intelligenti","Si ride, si pensa, si litiga con eleganza.","giochi da tavolo strategia famiglia"],
+  ["🌱","Un libro per allenare la mente","Autoaiuto pratico e senza prediche: piccoli passi, risultati veri.",libro("B0GX3GZP2J")],
+  ["📓","Diario della gratitudine","Tre righe al giorno. Sembra poco, cambia l'umore più di un caffè.","diario della gratitudine"],
+  ["🎧","Cuffie per audiolibri","Per leggere a occhi chiusi mentre si cammina o si cucina.","cuffie bluetooth leggere"]]},
+ {id:"pochi", t:"💶 Sotto i 15 euro", i:"Per il Babbo Natale segreto dell'ufficio, o per chi ha già speso tutto il 13 dicembre.", p:[
+  ["☕","Tazza divertente","Se fa ridere alle 7 del mattino, ha già fatto il suo lavoro.","tazza divertente regalo"],
+  ["🔦","Torcia frontale","Utile davvero, e fa sentire tutti un po' esploratori.","torcia frontale led ricaricabile"],
+  ["🧴","Kit crema mani","Inverno, mani screpolate, regalo azzeccato. Matematica.","crema mani set regalo"]]}
+];
+
+const nav = document.getElementById("nav"), main = document.getElementById("main");
+SEZIONI.filter(s => !s.fino || oggi <= s.fino).forEach(s => {
+  nav.insertAdjacentHTML("beforeend", `<a href="#${s.id}">${s.t}</a>`);
+  main.insertAdjacentHTML("beforeend",
+   `<section id="${s.id}"><h2>${s.t}</h2><p class="intro">${s.i}</p><div class="grid">` +
+   s.p.map(([ico,n,d,q]) => `<div class="card"><div class="ico">${ico}</div><h3>${n}</h3><p>${d}</p>` +
+     `<a class="btn" href="${cerca(q)}" target="_blank" rel="nofollow sponsored noopener">${q.includes("lucacarbone.eu") ? "Vedi la lista →" : "Vedi su Amazon →"}</a></div>`).join("") +
+   `</div></section>`);
+});
+</script>
+</body>
+</html>
